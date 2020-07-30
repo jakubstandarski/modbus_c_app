@@ -4,23 +4,26 @@
 
 
 #-----------------------------------------------------------------------------#
-# APPLICATION SETTINGS #
+# CLIENT SOURCE & HEADER FILES #
 #-----------------------------------------------------------------------------#
 
 CLIENT_APP = modbus_client.c
+
+CLIENT_EXTRA_SOURCE_DIR = ./client/source
+CLIENT_EXTRA_INCLUDE_DIR = ./client/include
+CLIENT_EXTRA_SOURCE_FILES =
+
+
+
+#-----------------------------------------------------------------------------#
+# SERVER SOURCE & HEADER FILES #
+#-----------------------------------------------------------------------------#
+
 SERVER_APP = modbus_server.c
-BUILD_DIR = ./build
 
-
-
-#-----------------------------------------------------------------------------#
-# EXTRA SOURCE & HEADER FILES #
-#-----------------------------------------------------------------------------#
-
-SOURCE_DIR = ./source
-EXTRA_SOURCE_FILES =
-
-EXTRA_INCLUDE_DIR = ./include
+SERVER_EXTRA_SOURCE_DIR = ./server/source
+SERVER_EXTRA_INCLUDE_DIR = ./server/include
+SERVER_EXTRA_SOURCE_FILES =
 
 
 
@@ -41,10 +44,14 @@ CSTANDARD = -std=gnu11
 COMPILER_OPTIMIZATION_LEVEL = O2
 COMPILER_ERRORS_LEVEL = -Wall -Werror
 
-CFLAGS =  $(CSTANDARD)
-CFLAGS += $(COMPILER_ERRORS_LEVEL)
-CFLAGS += $(COMPILER_OPTIMIZATION LEVEL)
-CFLAGS += -I$(EXTRA_INCLUDE_DIR) -I$(MODBUS_DIR)
+COMMON_CFLAGS =  $(CSTANDARD)
+COMMON_CFLAGS += $(COMPILER_ERRORS_LEVEL)
+COMMON_CFLAGS += $(COMPILER_OPTIMIZATION LEVEL)
+COMMON_CFLAGS += -I$(MODBUS_DIR)
+
+CLIENT_CFLAGS = -I$(CLIENT_EXTRA_INCLUDE_DIR)
+
+SERVER_CFLAGS = -I$(SERVER_EXTRA_INCLUDE_DIR)
 
 
 
@@ -53,4 +60,12 @@ CFLAGS += -I$(EXTRA_INCLUDE_DIR) -I$(MODBUS_DIR)
 #-----------------------------------------------------------------------------#
 
 LDFLAGS = -lmodbus
+
+
+
+#-----------------------------------------------------------------------------#
+# BUILD PROCEDURES #
+#-----------------------------------------------------------------------------#
+
+BUILD_DIR = ./build
 
