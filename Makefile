@@ -7,10 +7,10 @@
 # CLIENT SOURCE & HEADER FILES #
 #-----------------------------------------------------------------------------#
 
-CLIENT_APP = modbus_client.c
+CLIENT_SOURCE_DIR = ./client/source/
+CLIENT_INCLUDE_DIR = ./client/include/
 
-CLIENT_EXTRA_SOURCE_DIR = ./client/source
-CLIENT_EXTRA_INCLUDE_DIR = ./client/include
+CLIENT_MAIN_SOURCE_FILE = modbus_client.c
 CLIENT_EXTRA_SOURCE_FILES =
 
 
@@ -19,10 +19,10 @@ CLIENT_EXTRA_SOURCE_FILES =
 # SERVER SOURCE & HEADER FILES #
 #-----------------------------------------------------------------------------#
 
-SERVER_APP = modbus_server.c
+SERVER_SOURCE_DIR = ./server/source/
+SERVER_INCLUDE_DIR = ./server/include/
 
-SERVER_EXTRA_SOURCE_DIR = ./server/source
-SERVER_EXTRA_INCLUDE_DIR = ./server/include
+SERVER_MAIN_SOURCE_FILE = modbus_server.c
 SERVER_EXTRA_SOURCE_FILES =
 
 
@@ -49,9 +49,9 @@ COMMON_CFLAGS += $(COMPILER_ERRORS_LEVEL)
 COMMON_CFLAGS += $(COMPILER_OPTIMIZATION LEVEL)
 COMMON_CFLAGS += -I$(MODBUS_DIR)
 
-CLIENT_CFLAGS = -I$(CLIENT_EXTRA_INCLUDE_DIR)
+CLIENT_CFLAGS = -I$(CLIENT_INCLUDE_DIR)
 
-SERVER_CFLAGS = -I$(SERVER_EXTRA_INCLUDE_DIR)
+SERVER_CFLAGS = -I$(SERVER_INCLUDE_DIR)
 
 
 
@@ -67,5 +67,33 @@ LDFLAGS = -lmodbus
 # BUILD PROCEDURES #
 #-----------------------------------------------------------------------------#
 
-BUILD_DIR = ./build
+BUILD_DIR = ./build/
+CLIENT_APP_BIN = $(addprefix $(BUILD_DIR), \
+	$(strip $(basename $(CLIENT_MAIN_SOURCE_FILE))))
+SERVER_APP_BIN = $(addprefix $(BUILD_DIR), \
+	$(strip $(basename $(SERVER_MAIN_SOURCE_FILE))))
+
+
+CLIENT_SOURCES = $(addprefix $(CLIENT_SOURCE_DIR), $(CLIENT_MAIN_SOURCE_FILE))
+CLIENT_SOURCES += $(addprefix $(CLIENT_SOURCE_DIR), \
+	$(CLIENT_EXTRA_SOURCE_FILES))
+
+
+SERVER_SOURCES = $(addprefix $(SERVER_SOURCE_DIR), $(SERVER_MAIN_SOURCE_FILE))
+SERVER_SOURCES += $(addprefix $(SERVER_SOURCE_DIR), \
+	$(SERVER_EXTRA_SOURCE_FILES))
+
+
+all: $(CLIENT_APP_BIN) $(SERVER_APP_BIN)
+
+$(CLIENT_APP_BIN): $(CLIENT_SOURCES)
+	mkdir -p $(BUILD_DIR)
+	$(CC) $(COMMON_CFLAGS) $(CLIENT_CFLAGS) $^ --output $@ $(LDFLAGS)
+
+$(SERVER_APP_BIN): $(SERVER_SOURCES)
+	mkdir -p $(BUILD_DIR)
+	$(CC) $(COMMON_CFLAGS) $(SERVER_CFLAGS) $^ --output $@ $(LDFLAGS)
+
+clean:
+	rm -rf $(BUILD_DIR)
 
