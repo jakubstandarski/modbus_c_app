@@ -23,7 +23,7 @@
 /*****************************************************************************/
 
 status_t tcp_establish_connection(modbus_t *modbus_context,
-    const char *ip_address, int tcp_port);
+    const char *ip_address, int tcp_port, int incoming_connections_max);
 
 #endif /* TCP_CONNECTION_H */
 
