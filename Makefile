@@ -28,6 +28,17 @@ SERVER_EXTRA_SOURCE_FILES =
 
 
 #-----------------------------------------------------------------------------#
+# COMMON SOURCE & HEADER FILES #
+#-----------------------------------------------------------------------------#
+
+COMMON_SOURCE_DIR = ./common/source/
+COMMON_INCLUDE_DIR = ./common/include/
+
+COMMON_SOURCE_FILES =
+
+
+
+#-----------------------------------------------------------------------------#
 # THIRD PARTY HEADER FILES #
 #-----------------------------------------------------------------------------#
 
@@ -48,6 +59,7 @@ COMMON_CFLAGS =  $(CSTANDARD)
 COMMON_CFLAGS += $(COMPILER_ERRORS_LEVEL)
 COMMON_CFLAGS += $(COMPILER_OPTIMIZATION LEVEL)
 COMMON_CFLAGS += -I$(MODBUS_DIR)
+COMMON_CFLAGS += -I$(COMMON_INCLUDE_DIR)
 
 CLIENT_CFLAGS = -I$(CLIENT_INCLUDE_DIR)
 
@@ -83,14 +95,18 @@ SERVER_SOURCES = $(addprefix $(SERVER_SOURCE_DIR), $(SERVER_MAIN_SOURCE_FILE))
 SERVER_SOURCES += $(addprefix $(SERVER_SOURCE_DIR), \
 	$(SERVER_EXTRA_SOURCE_FILES))
 
+COMMON_SOURCES += $(addprefix $(COMMON_SOURCE_DIR), \
+	$(COMMON_SOURCE_FILES))
+
+
 
 all: $(CLIENT_APP_BIN) $(SERVER_APP_BIN)
 
-$(CLIENT_APP_BIN): $(CLIENT_SOURCES)
+$(CLIENT_APP_BIN): $(CLIENT_SOURCES) $(COMMON_SOURCES)
 	mkdir -p $(BUILD_DIR)
 	$(CC) $(COMMON_CFLAGS) $(CLIENT_CFLAGS) $^ --output $@ $(LDFLAGS)
 
-$(SERVER_APP_BIN): $(SERVER_SOURCES)
+$(SERVER_APP_BIN): $(SERVER_SOURCES) $(COMMON_SOURCES)
 	mkdir -p $(BUILD_DIR)
 	$(CC) $(COMMON_CFLAGS) $(SERVER_CFLAGS) $^ --output $@ $(LDFLAGS)
 
