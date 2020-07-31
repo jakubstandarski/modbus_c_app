@@ -32,6 +32,7 @@ int main(void)
     status_t status;
     status = tcp_establish_connection(modbus_context, ip_address, tcp_port);
     if (status != status_success) {
+        modbus_free(modbus_context);
         return -1;
     }
     
