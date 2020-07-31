@@ -37,7 +37,6 @@ status_t tcp_establish_connection(modbus_t *modbus_context,
     if (error_code == -1) {
         fprintf(stderr, "Modbus connection failed: %s\n",
             modbus_strerror(errno));
-            modbus_free(modbus_context);
             return status_error;
     }
 
