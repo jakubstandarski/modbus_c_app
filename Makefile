@@ -11,7 +11,7 @@ CLIENT_SOURCE_DIR = ./client/source/
 CLIENT_INCLUDE_DIR = ./client/include/
 
 CLIENT_MAIN_SOURCE_FILE = modbus_client.c
-CLIENT_EXTRA_SOURCE_FILES =
+CLIENT_EXTRA_SOURCE_FILES = tcp_connection.c
 
 
 
