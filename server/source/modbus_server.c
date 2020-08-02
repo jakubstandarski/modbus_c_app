@@ -10,6 +10,8 @@
 /* HEADERS */
 /*****************************************************************************/
 
+#include "communication.h"
+#include "status.h"
 #include "tcp_connection.h"
 
 #include <errno.h>
@@ -37,6 +39,21 @@ int main(void)
         return -1;
     }
 
+    modbus_mapping_t *modbus_mapping = NULL;
+    status = allocate_mapping(modbus_mapping);
+    if (status != status_success) {
+        modbus_free(modbus_context);
+        return -1;
+    }
+
+    while(1) {
+        status = communication_handler(modbus_context, modbus_mapping);
+        if (status != status_success) {
+            break;
+        }
+    }
+
+    modbus_mapping_free(modbus_mapping);
     modbus_close(modbus_context);
     modbus_free(modbus_context);
     return 0;
