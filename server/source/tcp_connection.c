@@ -11,6 +11,7 @@
 /*****************************************************************************/
 
 #include "status.h"
+#include "tcp_connection.h"
 
 #include <errno.h>
 #include <modbus.h>
