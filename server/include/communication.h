@@ -25,7 +25,7 @@
 
 status_t allocate_mapping(modbus_mapping_t *modbus_mapping);
 
-status_t communication_handler(modbus_t *modbus_context, uint8_t *request,
+status_t communication_handler(modbus_t *modbus_context,
     modbus_mapping_t *modbus_mapping);
 
 #endif /* COMMUNICATION_H */
