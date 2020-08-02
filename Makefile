@@ -23,7 +23,7 @@ SERVER_SOURCE_DIR = ./server/source/
 SERVER_INCLUDE_DIR = ./server/include/
 
 SERVER_MAIN_SOURCE_FILE = modbus_server.c
-SERVER_EXTRA_SOURCE_FILES = tcp_connection.c
+SERVER_EXTRA_SOURCE_FILES = tcp_connection.c communication.c
 
 
 
