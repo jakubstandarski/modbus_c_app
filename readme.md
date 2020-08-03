@@ -4,6 +4,7 @@
     - [Project goal](#project-goal)
     - [System requirements](#system-requirements)
 - [libmodbus installation guide](#libmodbus-installation-guide)
+- [Build process](#build-process)
 
 
 
@@ -64,4 +65,22 @@ $ sudo ldconfig
 ```
 
 Now You should be able to compile the application using attached `Makefile`.
+
+
+
+## Build process
+
+To build the application, just run single command:
+
+```sh
+$ make all
+```
+
+The application executables should be placed inside `./build/` directory.
+
+To remove them, run:
+
+```sh
+$ make clean
+```
 
