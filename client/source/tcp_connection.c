@@ -39,6 +39,8 @@ status_t tcp_establish_connection(modbus_t *modbus_context,
             modbus_strerror(errno));
             return status_error;
     }
+    printf("Modbus connection established successfully!\t");
+    printf("IP address: %s\t TCP port: %d\n", ip_address, tcp_port);
 
     return status_success;
 }
