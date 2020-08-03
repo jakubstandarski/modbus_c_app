@@ -45,6 +45,8 @@ status_t communication_handler(modbus_t *modbus_context,
 
     request_length = modbus_receive(modbus_context, request);
     if (request_length > 0) {
+        printf("Request received successfully!\n");
+
         int response_length = -1;
         response_length = modbus_reply(modbus_context, request, request_length,
             modbus_mapping);
