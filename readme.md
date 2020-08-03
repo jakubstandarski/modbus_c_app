@@ -57,5 +57,11 @@ Use your favourite text editor (e.g. Vim) and populate it with
 $ sudo vi /etc/ld.so.conf.d/modbus.conf
 ```
 
+Update your system linker:
+
+```sh
+$ sudo ldconfig
+```
+
 Now You should be able to compile the application using attached `Makefile`.
 
