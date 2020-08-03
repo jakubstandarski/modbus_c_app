@@ -37,10 +37,12 @@ status_t tcp_establish_connection(modbus_t *modbus_context,
     server_socket = modbus_tcp_listen(modbus_context,
         incoming_connections_max);
     if (server_socket == -1) {
-        fprintf(stderr, "Creation of server socket failed: %s\n",
+        fprintf(stderr, "Creation of server listening socket failed: %s\n",
             modbus_strerror(errno));
             return status_error;
     }
+    printf("%d listening socket[s] established successfully!\n",
+        incoming_connections_max);
 
     int error_code = -1;
     error_code = modbus_tcp_accept(modbus_context, &server_socket);
@@ -49,6 +51,8 @@ status_t tcp_establish_connection(modbus_t *modbus_context,
             modbus_strerror(errno));
             return status_error;
     }
+    printf("%d server socket[s] established successfully!\n",
+        incoming_connections_max);
 
     return status_success;
 }
