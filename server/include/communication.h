@@ -23,7 +23,9 @@
 /* PUBLIC FUNCTIONS PROTOTYPES */
 /*****************************************************************************/
 
-status_t allocate_mapping(modbus_mapping_t *modbus_mapping);
+status_t allocate_mapping(modbus_mapping_t *modbus_mapping,
+    int read_bits_max, int input_bits_max, int read_registers_max,
+    int input_registers_max);
 
 status_t communication_handler(modbus_t *modbus_context,
     modbus_mapping_t *modbus_mapping);
