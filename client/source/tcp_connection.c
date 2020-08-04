@@ -29,7 +29,7 @@ status_t tcp_establish_connection(modbus_t *modbus_context,
     if (modbus_context == NULL) {
         fprintf(stderr, "Initialization of modbus context failed: %s\n",
             modbus_strerror(errno));
-            return status_error;
+        return status_error;
     }
 
     int error_code;
@@ -37,7 +37,7 @@ status_t tcp_establish_connection(modbus_t *modbus_context,
     if (error_code == -1) {
         fprintf(stderr, "Modbus connection failed: %s\n",
             modbus_strerror(errno));
-            return status_error;
+        return status_error;
     }
     printf("Modbus connection established successfully!\t");
     printf("IP address: %s\t TCP port: %d\n", ip_address, tcp_port);
