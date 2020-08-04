@@ -56,9 +56,9 @@ status_t communication_handler(modbus_t *modbus_context,
             return status_error;
         } 
     } else if (request_length == -1) {
-            fprintf(stdout, "Closing the connection: %s\n",
-                modbus_strerror(errno));
-            return status_error;
+        fprintf(stdout, "Closing the connection: %s\n",
+            modbus_strerror(errno));
+        return status_error;
     }
 
     return status_success;
