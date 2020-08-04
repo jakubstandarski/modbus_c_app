@@ -40,7 +40,8 @@ int main(void)
     }
 
     modbus_mapping_t *modbus_mapping = NULL;
-    status = allocate_mapping(modbus_mapping);
+    status = allocate_mapping(modbus_mapping, 0, 0, MODBUS_MAX_READ_REGISTERS,
+        0);
     if (status != status_success) {
         modbus_free(modbus_context);
         return -1;
