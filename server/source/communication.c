@@ -27,7 +27,7 @@ status_t allocate_mapping(modbus_mapping_t *modbus_mapping,
     int read_bits_max, int input_bits_max, int read_registers_max,
     int input_registers_max)
 {
-    modbus_mapping = modbus_mapping_new(read_bits_max, input_bits_max
+    modbus_mapping = modbus_mapping_new(read_bits_max, input_bits_max,
         read_registers_max, input_registers_max);
     if (modbus_mapping == NULL) {
         fprintf(stderr, "Failed to allocate the mapping: %s\n",
