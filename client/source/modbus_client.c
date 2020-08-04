@@ -10,9 +10,6 @@
 /* HEADERS */
 /*****************************************************************************/
 
-#include "status.h"
-#include "tcp_connection.h"
-
 #include <errno.h>
 #include <modbus.h>
 #include <stdio.h>
@@ -25,19 +22,28 @@
 
 int main(void)
 {
-    modbus_t *modbus_context = NULL;
     const char ip_address[] = "127.0.0.1";
 
     int tcp_port = 0;
     printf("Input TCP port number: ");
     scanf("%d", &tcp_port);
 
-    status_t status;
-    status = tcp_establish_connection(modbus_context, ip_address, tcp_port);
-    if (status != status_success) {
-        modbus_free(modbus_context);
+    modbus_t *modbus_context = NULL;
+    modbus_context = modbus_new_tcp(ip_address, tcp_port);
+    if (modbus_context == NULL) {
+        fprintf(stderr, "Initializing modbus context failed: %s\n",
+            modbus_strerror(errno));
         return -1;
     }
+
+    int error_code = -1;
+    error_code = modbus_connect(modbus_context);
+    if (error_code == -1) {
+        fprintf(stderr, "Connection establishment failed: %s\n",
+            modbus_strerror(errno));
+    }
+    printf("Connection established successfully!\t");
+    printf("IP address: %s\t TCP port: %d\n", ip_address, tcp_port);
 
     uint16_t registers_table[MODBUS_MAX_READ_REGISTERS] = {0};
     int registers_read_count = -1;
@@ -47,7 +53,12 @@ int main(void)
         fprintf(stderr, "Reading registers failed: %s\n",
             modbus_strerror(errno));
     }
-    printf("Register value: %u\n", registers_table[0]);
+
+    for (int register_index = 0; register_index < MODBUS_MAX_READ_REGISTERS;
+        register_index++) {
+        printf("Register[%d] value: %u\n", register_index,
+            registers_table[register_index]);
+    }
     
     modbus_close(modbus_context);
     modbus_free(modbus_context);
