@@ -41,6 +41,8 @@ int main(void)
     if (error_code == -1) {
         fprintf(stderr, "Connection establishment failed: %s\n",
             modbus_strerror(errno));
+        modbus_free(modbus_context);
+        return -1;
     }
     printf("Connection established successfully!\t");
     printf("IP address: %s\t TCP port: %d\n", ip_address, tcp_port);
@@ -52,6 +54,9 @@ int main(void)
     if (registers_read_count == -1) {
         fprintf(stderr, "Reading registers failed: %s\n",
             modbus_strerror(errno));
+        modbus_close(modbus_context);
+        modbus_free(modbus_free);
+        return -1;
     }
 
     for (int register_index = 0; register_index < MODBUS_MAX_READ_REGISTERS;
