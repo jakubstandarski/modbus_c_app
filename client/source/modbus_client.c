@@ -46,7 +46,7 @@ int main(void)
         if (modbus_context == NULL) {
             fprintf(stderr, "Initializing modbus context failed: %s\n",
                 modbus_strerror(errno));
-            return -1;
+            continue;
         }
 
         int error_code = -1;
@@ -55,7 +55,7 @@ int main(void)
             fprintf(stderr, "Connection establishment failed: %s\n",
                 modbus_strerror(errno));
             modbus_free(modbus_context);
-            return -1;
+            continue;
         }
         printf("Connection established successfully:\t");
         printf("IP address: %s\t TCP port: %d\n", ip_address, tcp_port);
@@ -76,7 +76,7 @@ int main(void)
                 modbus_strerror(errno));
             modbus_close(modbus_context);
             modbus_free(modbus_context);
-            return -1;
+            continue;
         }
 
 
