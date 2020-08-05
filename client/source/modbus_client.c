@@ -77,8 +77,8 @@ int main(void)
 
     for (int register_index = 0; register_index < registers_count;
         register_index++) {
-        printf("Register[%d] value: %u\n", register_index,
-            registers_table[register_index]);
+        printf("Register[%d] value: %u\n", register_index +
+            registers_start_address, registers_table[register_index]);
     }
     
     modbus_close(modbus_context);
