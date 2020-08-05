@@ -15,6 +15,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 
 
@@ -42,54 +43,53 @@ int main(int argc, char *argv[])
             modbus_strerror(errno));
         return -1;
     }
-    printf("Modbus context initialized succesfully!\t");
+    printf("Modbus context initialized succesfully:\t");
     printf("IP address: %s\t TCP port: %d\n", ip_address, tcp_port);
- 
 
     modbus_mapping_t *modbus_mapping = NULL;
     modbus_mapping = modbus_mapping_new(0, 0, MODBUS_MAX_READ_REGISTERS, 0);
     if (modbus_mapping == NULL) {
         fprintf(stderr, "Failed to allocate the mapping: %s\n",
             modbus_strerror(errno));
-        modbus_close(modbus_context);
-        modbus_free(modbus_context);
         return -1;
     }
     printf("Mapping allocated successfully!\n");
 
 
     int incoming_connections_max = 1;
-    int server_socket = -1;
-    server_socket = modbus_tcp_listen(modbus_context,
-        incoming_connections_max);
-    if (server_socket == -1) {
-        fprintf(stderr, "Creation of server listening socket failed: %s\n",
-            modbus_strerror(errno));
-        modbus_free(modbus_context);
-        return -1;
-    }
-    printf("Server listening socket created successfully!\n");
+    while (1) {
+        int listening_server_socket = -1;
+        listening_server_socket = modbus_tcp_listen(modbus_context,
+            incoming_connections_max);
+        if (listening_server_socket == -1) {
+            fprintf(stderr, "Creation of server listening socket failed: %s\n",
+                modbus_strerror(errno));
+            modbus_free(modbus_context);
+            return -1;
+        }
+        printf("Server listening socket created successfully!\n");
+        printf("Waiting for the client to connect...\n");
 
-    int error_code = -1;
-    error_code = modbus_tcp_accept(modbus_context, &server_socket);
-    if (error_code == -1) {
-        fprintf(stderr, "Creation of client-server socket failed: %s\n",
-            modbus_strerror(errno));
-        modbus_free(modbus_context);
-        return -1;
-    }
-    printf("Client-server socket created successfully!\n");
+        int error_code = -1;
+        error_code = modbus_tcp_accept(modbus_context,
+            &listening_server_socket);
+        if (error_code == -1) {
+            fprintf(stderr, "Creation of client-server socket failed: %s\n",
+                modbus_strerror(errno));
+            modbus_free(modbus_context);
+            return -1;
+        }
+        printf("Client-server socket created successfully!\n");
+        close(listening_server_socket);
 
 
-    int request_length = -1;
-    int response_length = -1;
-    while(1) {
         uint8_t request[MODBUS_TCP_MAX_ADU_LENGTH] = {0};
-
+        int request_length = -1;
         request_length = modbus_receive(modbus_context, request);
         if (request_length > 0) {
             printf("Indication request received successfully!\n");
 
+            int response_length = -1;
             response_length = modbus_reply(modbus_context, request,
                 request_length, modbus_mapping);
             if (response_length == -1) {
@@ -101,14 +101,12 @@ int main(int argc, char *argv[])
         } else if (request_length == -1) {
             fprintf(stderr, "Failed to receive indication request: %s\n",
                 modbus_strerror(errno));
-            break;
         }
+        
+        printf("Closing connection with the client...\n\n");
+        modbus_close(modbus_context);
     }
-    printf("Closing the server: %s\n", modbus_strerror(errno));
 
-    modbus_mapping_free(modbus_mapping);
-    modbus_close(modbus_context);
-    modbus_free(modbus_context);
     return 0;
 }
 
