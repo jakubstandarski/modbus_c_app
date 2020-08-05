@@ -55,6 +55,7 @@ int main(int argc, char *argv[])
         modbus_free(modbus_context);
         return -1;
     }
+    printf("Mapping allocated successfully!\n");
 
 
     int incoming_connections_max = 1;
