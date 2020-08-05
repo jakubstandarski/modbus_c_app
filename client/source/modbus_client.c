@@ -21,6 +21,7 @@
 /*****************************************************************************/
 
 static int get_registers_start_address(void);
+static int get_registers_count(int registers_start_address);
 
 
 
@@ -60,17 +61,7 @@ int main(void)
     registers_start_address = get_registers_start_address();
 
     int registers_count = 0;
-    while (1) {
-        printf("Input number of registers to read [1 - %d]: ",
-            MODBUS_MAX_READ_REGISTERS - registers_start_address);
-        scanf("%d", &registers_count);
-        if ( registers_count > 0 && (registers_count <=
-            (MODBUS_MAX_READ_REGISTERS - registers_start_address))) {
-            break;
-        } else {
-            fprintf(stderr, "Invalid number...\n");
-        }
-    }
+    registers_count = get_registers_count(registers_start_address);
 
     uint16_t registers_table[MODBUS_MAX_READ_REGISTERS] = {0};
     int registers_read_count = -1;
@@ -117,5 +108,25 @@ static int get_registers_start_address(void)
     }
 
     return registers_start_address;
+}
+
+
+
+static int get_registers_count(int registers_start_address)
+{
+    int registers_count = 0;
+    while (1) {
+        printf("Input number of registers to read [1 - %d]: ",
+            MODBUS_MAX_READ_REGISTERS - registers_start_address);
+        scanf("%d", &registers_count);
+        if ( registers_count > 0 && (registers_count <=
+            (MODBUS_MAX_READ_REGISTERS - registers_start_address))) {
+            break;
+        } else {
+            fprintf(stderr, "Invalid number...\n");
+        }
+    }
+
+    return registers_count;
 }
 
