@@ -12,7 +12,9 @@
 
 #include <errno.h>
 #include <modbus.h>
+
 #include <stdio.h>
+#include <stdlib.h>
 
 
 
@@ -20,13 +22,18 @@
 /* MAIN */
 /*****************************************************************************/
 
-int main(void)
+int main(int argc, char *argv[])
 {
     const char ip_address[] = "127.0.0.1";
 
     int tcp_port = 0;
-    printf("Input TCP port number: ");
-    scanf("%d", &tcp_port);
+    if (argc > 1) {
+        tcp_port = atoi(argv[1]);
+    } else {
+        fprintf(stderr, "TCP port has not been provided!\n");
+        fprintf(stderr, "Closing the server application...\n");
+        return -1;
+    }
 
     modbus_t *modbus_context = NULL;
     modbus_context = modbus_new_tcp(ip_address, tcp_port);
@@ -35,7 +42,20 @@ int main(void)
             modbus_strerror(errno));
         return -1;
     }
-    printf("Modbus context initialized succesfully!\n");
+    printf("Modbus context initialized succesfully!\t");
+    printf("IP address: %s\t TCP port: %d\n", ip_address, tcp_port);
+ 
+
+    modbus_mapping_t *modbus_mapping = NULL;
+    modbus_mapping = modbus_mapping_new(0, 0, MODBUS_MAX_READ_REGISTERS, 0);
+    if (modbus_mapping == NULL) {
+        fprintf(stderr, "Failed to allocate the mapping: %s\n",
+            modbus_strerror(errno));
+        modbus_close(modbus_context);
+        modbus_free(modbus_context);
+        return -1;
+    }
+
 
     int incoming_connections_max = 1;
     int server_socket = -1;
@@ -59,15 +79,6 @@ int main(void)
     }
     printf("Client-server socket created successfully!\n");
 
-    modbus_mapping_t *modbus_mapping = NULL;
-    modbus_mapping = modbus_mapping_new(0, 0, MODBUS_MAX_READ_REGISTERS, 0);
-    if (modbus_mapping == NULL) {
-        fprintf(stderr, "Failed to allocate the mapping: %s\n",
-            modbus_strerror(errno));
-        modbus_close(modbus_context);
-        modbus_free(modbus_context);
-        return -1;
-    }
 
     int request_length = -1;
     int response_length = -1;
