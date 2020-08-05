@@ -17,6 +17,14 @@
 
 
 /*****************************************************************************/
+/* PRIVATE FUNCTIONS PROTOTYPES */
+/*****************************************************************************/
+
+static int get_registers_start_address(void);
+
+
+
+/*****************************************************************************/
 /* MAIN */
 /*****************************************************************************/
 
@@ -49,17 +57,7 @@ int main(void)
 
 
     int registers_start_address = 0;
-    while (1) {
-        printf("Input registers start address [0 - %d]: ",
-            MODBUS_MAX_READ_REGISTERS - 1);
-        scanf("%d", &registers_start_address);
-        if (registers_start_address >= 0 && registers_start_address <
-            MODBUS_MAX_READ_REGISTERS) {
-            break;
-        } else {
-            fprintf(stderr, "Invalid address...\n");
-        }
-    }
+    registers_start_address = get_registers_start_address();
 
     int registers_count = 0;
     while (1) {
@@ -95,5 +93,29 @@ int main(void)
     modbus_close(modbus_context);
     modbus_free(modbus_context);
     return 0;
+}
+
+
+
+/*****************************************************************************/
+/* PRIVATE FUNCTIONS DEFINITIONS */
+/*****************************************************************************/
+
+static int get_registers_start_address(void)
+{
+    int registers_start_address = 0;
+    while (1) {
+        printf("Input registers start address [0 - %d]: ",
+            MODBUS_MAX_READ_REGISTERS - 1);
+        scanf("%d", &registers_start_address);
+        if (registers_start_address >= 0 && registers_start_address <
+            MODBUS_MAX_READ_REGISTERS) {
+            break;
+        } else {
+            fprintf(stderr, "Invalid address...\n");
+        }
+    }
+
+    return registers_start_address;
 }
 
