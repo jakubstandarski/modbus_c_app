@@ -24,6 +24,9 @@
 static int get_registers_start_address(void);
 static int get_registers_count(int registers_start_address);
 
+static void set_registers(uint16_t *registers_write_table,
+    int registers_count);
+
 
 
 /*****************************************************************************/
@@ -67,23 +70,27 @@ int main(void)
         int registers_count = 0;
         registers_count = get_registers_count(registers_start_address);
 
-        uint16_t registers_table[MODBUS_MAX_READ_REGISTERS] = {0};
-        int registers_read_count = -1;
-        registers_read_count = modbus_read_registers(modbus_context,
-            registers_start_address, registers_count, registers_table);
-        if (registers_read_count == -1) {
-            fprintf(stderr, "Reading registers failed: %s\n",
+        uint16_t registers_write_table[MODBUS_MAX_READ_REGISTERS] = {0};
+        set_registers(registers_write_table, MODBUS_MAX_READ_REGISTERS);
+
+        uint16_t registers_read_table[MODBUS_MAX_READ_REGISTERS] = {0};
+
+        error_code = -1;
+        error_code = modbus_write_and_read_registers(modbus_context,
+            registers_start_address, registers_count, registers_write_table,
+            registers_start_address, registers_count, registers_read_table);
+        if (error_code == -1) {
+            fprintf(stderr, "Writing and reading registers failed: %s\n",
                 modbus_strerror(errno));
             modbus_close(modbus_context);
             modbus_free(modbus_context);
             continue;
         }
 
-
         for (int register_index = 0; register_index < registers_count;
             register_index++) {
             printf("Register[%d] value: %u\n", register_index +
-                registers_start_address, registers_table[register_index]);
+                registers_start_address, registers_read_table[register_index]);
         }
 
 
@@ -97,11 +104,12 @@ int main(void)
                 fprintf(stderr, "Invalid character...\n");
             }
         }
+
+        modbus_close(modbus_context);
+        modbus_free(modbus_context);
     } 
 
-    
-    modbus_close(modbus_context);
-    modbus_free(modbus_context);
+
     return 0;
 }
 
@@ -147,5 +155,15 @@ static int get_registers_count(int registers_start_address)
     }
 
     return registers_count;
+}
+
+
+
+static void set_registers(uint16_t *registers_write_table, int registers_count)
+{
+    for (int register_index = 0; register_index < registers_count;
+        register_index++) {
+        registers_write_table[register_index] = register_index;
+    }
 }
 
