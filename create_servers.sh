@@ -10,7 +10,22 @@
 
 
 
-read -p "Enter number of servers to be opened: " number_of_servers
+#-----------------------------------------------------------------------------#
+# FUNCTIONS DEFINITIONS #
+#-----------------------------------------------------------------------------#
+
+check_if_build_exists() {
+    if [ ! -d ./build/ ]; then
+        make all
+    fi
+}
+
+
+get_number_of_servers() {
+    echo
+    read -p "Enter number of servers to be opened: " number_of_servers
+}
+
 
 create_servers() {
     local tcp_port=1502
@@ -21,5 +36,13 @@ create_servers() {
     done
 }
 
+
+
+#-----------------------------------------------------------------------------#
+# SCRIPT EXECUTION #
+#-----------------------------------------------------------------------------#
+
+check_if_build_exists
+get_number_of_servers
 create_servers $number_of_servers
 
